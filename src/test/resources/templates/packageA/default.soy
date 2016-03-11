@@ -1,0 +1,24 @@
+{namespace packageA.templates}
+
+
+/**
+ *
+ */
+{deltemplate packageA_deltemplateA}
+  deltemplateA - default
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate packageA_deltemplateB}
+  deltemplateB - default
+{/deltemplate}
+
+/**
+ *
+ */
+{template .Proxy}
+  {delcall packageA_deltemplateA data="all" /}
+{/template}
+
