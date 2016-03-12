@@ -6,6 +6,7 @@ import com.google.javascript.rhino.Node;
 import org.slieb.closure.soyoptimizer.callback.DelegateTemplateRegistrationsRemover;
 import org.slieb.closure.soyoptimizer.callback.DelegateTemplateRegistrationsScanner;
 import org.slieb.closure.soyoptimizer.callback.DelegateTemplateStrictnessChecker;
+import org.slieb.closure.soyoptimizer.callback.SoyDelegateUsageScanner;
 
 public class SoyDelegateOptimizationsPass implements CompilerPass {
 
@@ -30,6 +31,7 @@ public class SoyDelegateOptimizationsPass implements CompilerPass {
             DelegateTemplateRegistrationsScanner registrationsScanner = new DelegateTemplateRegistrationsScanner();
             NodeTraversal.traverseTyped(compiler, root, registrationsScanner);
             NodeTraversal.traverseTyped(compiler, root, new DelegateTemplateRegistrationsRemover(registrationsScanner.getOverriddenRegistrations()));
+            NodeTraversal.traverseTyped(compiler, root, new SoyDelegateUsageScanner());
         }
     }
 
