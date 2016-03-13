@@ -14,19 +14,22 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 
 public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCallback {
 
+    private final boolean assumeStrict;
     private final Set<DelegateIdentifier> templateIds;
 
     private final Set<DelegateReference> templateCalls;
 
     private final Set<DelegateRegistration> templateRegistrations;
 
-    public SoyDelegateUsageScanner() {
+    public SoyDelegateUsageScanner(final boolean assumeStrict) {
+        this.assumeStrict = assumeStrict;
         this.templateIds = Collections.newSetFromMap(new ConcurrentHashMap<>());
         this.templateCalls = Collections.newSetFromMap(new ConcurrentHashMap<>());
         this.templateRegistrations = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -48,6 +51,18 @@ public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCall
         }
     }
 
+    public void reset() {
+        templateIds.clear();
+        templateCalls.clear();
+        templateRegistrations.clear();
+    }
+
+    public Set<DelegateRegistration> getUnusedTemplates() {
+        final Set<DelegateRegistration> usedRegistrations = getUsedRegistrations();
+        final Predicate<DelegateRegistration> contains = usedRegistrations::contains;
+        return usedRegistrations.stream().filter(contains.negate()).collect(toSet());
+    }
+
     public boolean isUsedRegistration(DelegateRegistration registration) {
         final DelegateReference reference = registration.getReference();
 
@@ -56,7 +71,7 @@ public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCall
         }
 
         final DelegateIdentifier identifier = registration.getIdentifier();
-        final boolean useStrict = templateCalls.stream().allMatch(callReference -> isStrictReference(identifier, callReference));
+        final boolean useStrict = assumeStrict || templateCalls.stream().allMatch(callReference -> isStrictReference(identifier, callReference));
 
         if (useStrict) {
             return isUsedRegistrationStrictCheck(reference);

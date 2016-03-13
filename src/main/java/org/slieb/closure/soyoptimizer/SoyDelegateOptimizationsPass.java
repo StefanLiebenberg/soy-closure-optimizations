@@ -8,6 +8,7 @@ import org.slieb.closure.soyoptimizer.callback.DelegateTemplateRegistrationsScan
 import org.slieb.closure.soyoptimizer.callback.DelegateTemplateStrictnessChecker;
 import org.slieb.closure.soyoptimizer.callback.SoyDelegateUsageScanner;
 
+import java.util.Set;
 public class SoyDelegateOptimizationsPass implements CompilerPass {
 
     private final Compiler compiler;
@@ -27,13 +28,28 @@ public class SoyDelegateOptimizationsPass implements CompilerPass {
     public void process(final Node externs,
                         final Node root) {
         final DelegateTemplateStrictnessChecker checker = new DelegateTemplateStrictnessChecker();
-        NodeTraversal.traverseTyped(compiler, root, checker);
-        if (checker.isHasStrictIdCalls()) {
+        doTraverse(root, checker);
+        if (checker.isHasStrictIdCalls()) { 
             DelegateTemplateRegistrationsScanner registrationsScanner = new DelegateTemplateRegistrationsScanner();
-            NodeTraversal.traverseTyped(compiler, root, registrationsScanner);
-            NodeTraversal.traverseTyped(compiler, root, new DelegateTemplateRegistrationsRemover(registrationsScanner.getOverriddenRegistrations()));
-            NodeTraversal.traverseTyped(compiler, root, new SoyDelegateUsageScanner());
+            doTraverse(root, registrationsScanner);
+            doTraverse(root, new DelegateTemplateRegistrationsRemover(registrationsScanner.getOverriddenRegistrations()));
+
+            SoyDelegateUsageScanner usageScanner = new SoyDelegateUsageScanner(checker.isHasStrictGetFnCalls() && checker
+                    .isHasStrictVariantUsages());
+            doTraverse(root, usageScanner);
+            Set<DelegateRegistration> unusedTemplates = usageScanner.getUnusedTemplates();
+            while (!unusedTemplates.isEmpty()) {
+                doTraverse(root, new DelegateTemplateRegistrationsRemover(unusedTemplates));
+                usageScanner.reset();
+                doTraverse(root, usageScanner);
+                unusedTemplates = usageScanner.getUnusedTemplates();
         }
+        }
+    }
+
+    private void doTraverse(final Node root,
+                            final NodeTraversal.Callback callback) {
+        NodeTraversal.traverseTyped(compiler, root, callback);
     }
 
     public static void addToOptions(Compiler compiler,

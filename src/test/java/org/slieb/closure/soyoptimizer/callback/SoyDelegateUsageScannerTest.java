@@ -30,7 +30,7 @@ public class SoyDelegateUsageScannerTest extends BaseTemplateTest {
 
     @Before
     public void setUp() throws Exception {
-        scanner = new SoyDelegateUsageScanner();
+        scanner = new SoyDelegateUsageScanner(false);
     }
 
     private void parseAndVisit(final SourceFile file) {
