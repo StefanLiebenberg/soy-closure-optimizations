@@ -27,6 +27,7 @@ public class SoyDelegateOptimizationsPass implements CompilerPass {
     public void process(final Node externs,
                         final Node root) {
         final DelegateTemplateStrictnessChecker checker = new DelegateTemplateStrictnessChecker();
+        NodeTraversal.traverseTyped(compiler, root, checker);
         if (checker.isHasStrictIdCalls()) {
             DelegateTemplateRegistrationsScanner registrationsScanner = new DelegateTemplateRegistrationsScanner();
             NodeTraversal.traverseTyped(compiler, root, registrationsScanner);
