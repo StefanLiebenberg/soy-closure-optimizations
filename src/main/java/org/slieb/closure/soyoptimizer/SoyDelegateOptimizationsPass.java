@@ -9,6 +9,7 @@ import org.slieb.closure.soyoptimizer.callback.DelegateTemplateStrictnessChecker
 import org.slieb.closure.soyoptimizer.callback.SoyDelegateUsageScanner;
 
 import java.util.Set;
+
 public class SoyDelegateOptimizationsPass implements CompilerPass {
 
     private final Compiler compiler;
@@ -29,13 +30,13 @@ public class SoyDelegateOptimizationsPass implements CompilerPass {
                         final Node root) {
         final DelegateTemplateStrictnessChecker checker = new DelegateTemplateStrictnessChecker();
         doTraverse(root, checker);
-        if (checker.isHasStrictIdCalls()) { 
+        if (checker.isHasStrictIdCalls()) {
             DelegateTemplateRegistrationsScanner registrationsScanner = new DelegateTemplateRegistrationsScanner();
             doTraverse(root, registrationsScanner);
             doTraverse(root, new DelegateTemplateRegistrationsRemover(registrationsScanner.getOverriddenRegistrations()));
 
-            SoyDelegateUsageScanner usageScanner = new SoyDelegateUsageScanner(checker.isHasStrictGetFnCalls() && checker
-                    .isHasStrictVariantUsages());
+            final boolean assumeStrict = checker.isHasStrictGetFnCalls() && checker.isHasStrictVariantUsages();
+            SoyDelegateUsageScanner usageScanner = new SoyDelegateUsageScanner(assumeStrict);
             doTraverse(root, usageScanner);
             Set<DelegateRegistration> unusedTemplates = usageScanner.getUnusedTemplates();
             while (!unusedTemplates.isEmpty()) {
@@ -43,7 +44,7 @@ public class SoyDelegateOptimizationsPass implements CompilerPass {
                 usageScanner.reset();
                 doTraverse(root, usageScanner);
                 unusedTemplates = usageScanner.getUnusedTemplates();
-        }
+            }
         }
     }
 

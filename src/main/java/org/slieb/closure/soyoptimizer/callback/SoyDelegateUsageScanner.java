@@ -60,7 +60,7 @@ public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCall
     public Set<DelegateRegistration> getUnusedTemplates() {
         final Set<DelegateRegistration> usedRegistrations = getUsedRegistrations();
         final Predicate<DelegateRegistration> contains = usedRegistrations::contains;
-        return usedRegistrations.stream().filter(contains.negate()).collect(toSet());
+        return templateRegistrations.stream().filter(contains.negate()).collect(toSet());
     }
 
     public boolean isUsedRegistration(DelegateRegistration registration) {
