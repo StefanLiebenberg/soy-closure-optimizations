@@ -85,10 +85,6 @@
                         <id>default-resources</id>
                         <phase>none</phase>
                     </execution>
-                    <execution>
-                        <id>default-testResources</id>
-                        <phase>none</phase>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
