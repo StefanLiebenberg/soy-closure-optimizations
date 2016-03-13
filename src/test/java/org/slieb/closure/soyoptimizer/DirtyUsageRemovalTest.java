@@ -27,9 +27,9 @@ public class DirtyUsageRemovalTest extends BaseTemplateTest {
         final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
         addToOptions(compiler, compilerOptions);
         compilerOptions.setWarningLevel(
-                DiagnosticGroup.forType(SoyDiagnostics.SOY_NOT_USING_ID), CheckLevel.OFF);
+                DiagnosticGroup.forType(SoyDiagnostics.OPTIMIZATION_GET_ID_NOT_USED_FOR_GET_FN), CheckLevel.OFF);
         compilerOptions.setWarningLevel(
-                DiagnosticGroup.forType(SoyDiagnostics.SOY_NOT_STRING_LITERAL_FOR_VARIANT), CheckLevel.OFF);
+                DiagnosticGroup.forType(SoyDiagnostics.OPTIMIZATION_STRING_LITERAL_FOR_VARIANT), CheckLevel.OFF);
         compilerOptions.setPrettyPrint(true);
         result = compiler.compile(externs, inputs, compilerOptions);
     }

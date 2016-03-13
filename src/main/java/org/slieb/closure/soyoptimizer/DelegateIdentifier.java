@@ -7,7 +7,7 @@ public class DelegateIdentifier {
     public DelegateIdentifier(final String templateName) {
         this.templateName = templateName;
     }
-    
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) { return true; }

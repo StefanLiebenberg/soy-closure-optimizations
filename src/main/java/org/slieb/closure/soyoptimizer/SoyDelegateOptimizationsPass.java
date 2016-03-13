@@ -10,6 +10,9 @@ import org.slieb.closure.soyoptimizer.callback.SoyDelegateUsageScanner;
 
 import java.util.Set;
 
+/**
+ * A custom compiler pass to scan for unused templates or overridden soy templates.
+ */
 public class SoyDelegateOptimizationsPass implements CompilerPass {
 
     private final Compiler compiler;

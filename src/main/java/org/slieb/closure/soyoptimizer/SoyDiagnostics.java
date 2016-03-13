@@ -7,32 +7,36 @@ public class SoyDiagnostics {
 
     private SoyDiagnostics() {}
 
-    public static final DiagnosticType SOY_NOT_STRING_LITERAL_FOR_ID =
-            DiagnosticType.error("SOY_NOT_STRING_LITERAL_FOR_ID",
+    public static final DiagnosticType REQUIREMENT_STRING_LITERAL_FOR_GET_ID =
+            DiagnosticType.error("REQUIREMENT_STRING_LITERAL_FOR_GET_ID",
                                  "Not using string literal for " + SoyDelegateNodeHelper.GET_DELEGATE_ID + ".");
 
-    public static final DiagnosticType SOY_NOT_STRING_LITERAL_FOR_VARIANT =
-            DiagnosticType.warning("SOY_NOT_STRING_LITERAL",
-                                   "Not using string literal for variant. Some features of delegate optimization will be less powerfull.");
+    public static final DiagnosticType OPTIMIZATION_STRING_LITERAL_FOR_VARIANT =
+            DiagnosticType.warning("OPTIMIZATION_STRING_LITERAL_FOR_VARIANT",
+                                   "Not using string literal for variant. Some soy optimizations won't be able to run.");
 
-    public static final DiagnosticType SOY_NOT_USING_ID =
-            DiagnosticType.warning("SOY_NOT_USING_ID", SoyDelegateNodeHelper.GET_DELEGATE_FN + "called, but the first argument is not " + SoyDelegateNodeHelper
-                    .GET_DELEGATE_ID);
-
-    public static final DiagnosticGroup SOY_DELEGATE_CRITICAL_GROUP =
-            DiagnosticGroup.forType(SOY_NOT_STRING_LITERAL_FOR_ID);
+    public static final DiagnosticType OPTIMIZATION_GET_ID_NOT_USED_FOR_GET_FN =
+            DiagnosticType.warning("OPTIMIZATION_GET_ID_NOT_USED_FOR_GET_FN",
+                                   SoyDelegateNodeHelper.GET_DELEGATE_FN + "called, but the first argument is not " + SoyDelegateNodeHelper
+                                           .GET_DELEGATE_ID);
 
     /**
-     *
+     * All SoyDelegateOptimizationPass diagnostics that indicate fatal failures.
      */
-    public static final DiagnosticGroup SOY_DELEGATE_OPTIMIZATIONS_GROUP =
+    public static final DiagnosticGroup REQUIREMENTS =
+            DiagnosticGroup.forType(REQUIREMENT_STRING_LITERAL_FOR_GET_ID);
+
+    /**
+     * All SoyDelegateOptimizationPass diagnostics that related to optimization checks.
+     */
+    public static final DiagnosticGroup OPTIMIZATIONS =
             new DiagnosticGroup(
-                    DiagnosticGroup.forType(SOY_NOT_STRING_LITERAL_FOR_VARIANT),
-                    DiagnosticGroup.forType(SOY_NOT_USING_ID));
+                    DiagnosticGroup.forType(OPTIMIZATION_STRING_LITERAL_FOR_VARIANT),
+                    DiagnosticGroup.forType(OPTIMIZATION_GET_ID_NOT_USED_FOR_GET_FN));
 
     /**
-     * All related warnings.
+     * All SoyDelegateOptimizationPass related diagnostics
      */
-    public static final DiagnosticGroup SOY_DELEGATE_GROUP =
-            new DiagnosticGroup(SOY_DELEGATE_CRITICAL_GROUP, SOY_DELEGATE_OPTIMIZATIONS_GROUP);
+    public static final DiagnosticGroup ALL =
+            new DiagnosticGroup(REQUIREMENTS, OPTIMIZATIONS);
 }

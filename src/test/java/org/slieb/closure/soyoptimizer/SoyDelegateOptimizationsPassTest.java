@@ -84,7 +84,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
                                                                  SoyDelegateNodeHelper.GET_DELEGATE_ID)));
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
         final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
-        //        compilerOptions.setWarningLevel(SoyDiagnostics.SOY_DELEGATE_GROUP, CheckLevel.OFF);
+        //        compilerOptions.setWarningLevel(SoyDiagnostics.ALL, CheckLevel.OFF);
 
         compilerOptions.setPrettyPrint(true);
         Result result = compiler.compile(externs, inputs, compilerOptions);
@@ -104,7 +104,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
                                                                  SoyDelegateNodeHelper.GET_DELEGATE_ID)));
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
         final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
-        compilerOptions.setWarningLevel(SoyDiagnostics.SOY_DELEGATE_GROUP, CheckLevel.OFF);
+        compilerOptions.setWarningLevel(SoyDiagnostics.ALL, CheckLevel.OFF);
         compilerOptions.setPrettyPrint(true);
         Result result = compiler.compile(externs, inputs, compilerOptions);
         Assert.assertTrue(result.success);

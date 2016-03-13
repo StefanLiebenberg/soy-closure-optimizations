@@ -24,7 +24,7 @@ public class DelegateTemplateStrictnessChecker extends NodeTraversal.AbstractPos
             final Node templateName = new DelegateGetIdentifierCall(n).getTemplateNode().get();
             if (!templateName.isString()) {
                 hasStrictIdCalls = false;
-                t.report(templateName, SOY_NOT_STRING_LITERAL_FOR_ID);
+                t.report(templateName, REQUIREMENT_STRING_LITERAL_FOR_GET_ID);
             }
         }
         if (isGetDelegateFnCall(n)) {
@@ -32,13 +32,13 @@ public class DelegateTemplateStrictnessChecker extends NodeTraversal.AbstractPos
             final Node identifierNode = delegateGetFunctionCall.getIdentifierNode().get();
             if (!SoyDelegateNodeHelper.isGetDelegateIdCall(identifierNode)) {
                 hasStrictGetFnCalls = false;
-                t.report(identifierNode, SOY_NOT_USING_ID);
+                t.report(identifierNode, OPTIMIZATION_GET_ID_NOT_USED_FOR_GET_FN);
             }
 
             final Node variantNode = delegateGetFunctionCall.getVariantNode().get();
             if (!variantNode.isString()) {
                 isHasStrictVariantUsages = false;
-                t.report(variantNode, SOY_NOT_STRING_LITERAL_FOR_VARIANT);
+                t.report(variantNode, OPTIMIZATION_STRING_LITERAL_FOR_VARIANT);
             }
         }
     }
