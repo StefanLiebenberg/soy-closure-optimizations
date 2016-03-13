@@ -15,9 +15,12 @@ import java.util.Set;
  */
 public class SoyDelegateOptimizationsPass implements CompilerPass {
 
-    private final Compiler compiler;
+    private final AbstractCompiler compiler;
 
-    public SoyDelegateOptimizationsPass(final Compiler compiler) {
+    /**
+     * @param compiler The Abstract compiler object.
+     */
+    public SoyDelegateOptimizationsPass(final AbstractCompiler compiler) {
         this.compiler = compiler;
     }
 
