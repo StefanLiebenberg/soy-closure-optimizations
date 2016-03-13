@@ -1,0 +1,112 @@
+{namespace templates.packageC}
+
+/**
+ *
+ */
+{deltemplate templateName_001}
+   Package C - Template 001 - Default
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_001 variant="'variant_1'"}
+   Package C - Template 001 - Variant 1
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_001 variant="'variant_2'"}
+   Package C - Template 001 - Variant 2
+{/deltemplate}
+
+/**
+ *
+ */
+{template .Template001}
+  {delcall templateName_001 variant="$ij.variant" /}
+{/template}
+
+/**
+ *
+ */
+{deltemplate templateName_002}
+   Package C - Template 002 - Default
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_002 variant="'variant_1'"}
+   Package C - Template 002 - Variant 1
+   {delcall templateName_002 /}
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_002 variant="'variant_2'"}
+   Package C - Template 002 - Variant 2
+   {delcall templateName_002 variant="'variant_1'" /}
+{/deltemplate}
+
+/**
+ *
+ */
+{template .Template002}
+  {delcall templateName_002 variant="'variant_2'" /}
+{/template}
+
+
+/**
+ *
+ */
+{deltemplate templateName_003}
+   Package C - Template 003 - Default
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_003 variant="'variant_1'"}
+   Package C - Template 003 - Variant 1
+   {delcall templateName_003 /}
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_003 variant="'variant_2'"}
+   Package C - Template 003 - Variant 2
+   {delcall templateName_003 variant="'variant_1'" /}
+{/deltemplate}
+
+
+/**
+ *
+ */
+{deltemplate templateName_004}
+   Package C - Template 004 - Default
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_004 variant="'variant_1'"}
+   Package C - Template 004 - Variant 1
+{/deltemplate}
+
+/**
+ *
+ */
+{deltemplate templateName_004 variant="'variant_2'"}
+   Package C - Template 004 - Variant 2
+{/deltemplate}
+
+/**
+ *
+ */
+{template .Template004}
+  {delcall templateName_004 /}
+{/template}
