@@ -32,8 +32,6 @@ public class DirtyUsageRemovalTest extends BaseTemplateTest {
                 DiagnosticGroup.forType(SoyDiagnostics.SOY_NOT_STRING_LITERAL_FOR_VARIANT), CheckLevel.OFF);
         compilerOptions.setPrettyPrint(true);
         result = compiler.compile(externs, inputs, compilerOptions);
-
-System.err.println(compiler.toSource());
     }
 
     @Test
