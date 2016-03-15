@@ -262,7 +262,7 @@
         <dependency>
             <groupId>com.google.template</groupId>
             <artifactId>soy</artifactId>
-            <version>2015-04-10</version>
+            <version>2016-01-12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
