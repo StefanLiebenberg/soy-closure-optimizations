@@ -1,5 +1,5 @@
 # soy-closure-optimizations
-A compiler custom pass to remove extra soy files.
+A compiler custom pass to remove extra soy delegate templates from the compiled javascript artifact.
 
 ## Usage
 
