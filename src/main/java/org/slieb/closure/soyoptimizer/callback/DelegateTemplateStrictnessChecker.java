@@ -9,10 +9,34 @@ import org.slieb.closure.soyoptimizer.node.DelegateGetIdentifierCall;
 import static org.slieb.closure.soyoptimizer.SoyDelegateNodeHelper.isGetDelegateFnCall;
 import static org.slieb.closure.soyoptimizer.SoyDiagnostics.*;
 
+/**
+ * 
+ * - soy.getDelegateFn(soy.getDelegateId('some-template'), 'some-variant', false);
+ *
+ * - var idValue = 'some-template';
+ * - var id = soy.getDelegateId(idValue);
+ * - var variantValue = 'some-variant';
+ * - var template = soy.getDelegateFn(id, variantValue, false);
+ *
+ */
 public class DelegateTemplateStrictnessChecker extends NodeTraversal.AbstractPostOrderCallback {
 
+    /**
+     * The argument passed to soy.getDelegateId('some-template') calls are always string primitives instead of some variable.
+     */
     private boolean hasStrictIdCalls = true;
+
+    /**
+     * The first argument to soy.getDelegateId(soy.getDelegateId('some-template'), 'some-variant', false) calls are
+     * always soy.getDelegateId calls instead of some variable.
+     */
     private boolean hasStrictGetFnCalls = true;
+
+    /**
+     * The second argument to soy.getDelegateId(soy.getDelegateId('some-template'), 'some-variant', false) calls are
+     * always string primitives instead of some variable.
+     *
+     */
     private boolean isHasStrictVariantUsages = true;
 
     @Override

@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCallback {
 
     private final boolean assumeStrict;
+
     private final Set<DelegateIdentifier> templateIds;
 
     private final Set<DelegateReference> templateCalls;
@@ -63,10 +64,14 @@ public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCall
         return templateRegistrations.stream().filter(contains.negate()).collect(toSet());
     }
 
-    public boolean isUsedRegistration(DelegateRegistration registration) {
-        final DelegateReference reference = registration.getReference();
+    public Set<DelegateRegistration> getUsedRegistrations() {
+        return templateRegistrations.stream().filter(this::isUsedRegistration).collect(toSet());
+    }
 
-        if (templateCalls.contains(reference)) {
+    public boolean isUsedRegistration(DelegateRegistration registration) {
+        final DelegateReference registrationReference = registration.getReference();
+
+        if (templateCalls.contains(registrationReference)) {
             return true;
         }
 
@@ -74,10 +79,36 @@ public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCall
         final boolean useStrict = assumeStrict || templateCalls.stream().allMatch(callReference -> isStrictReference(identifier, callReference));
 
         if (useStrict) {
-            return isUsedRegistrationStrictCheck(reference);
+            return isUsedRegistrationStrictCheck(registrationReference);
         } else {
             return isUsedRegistrationSoftCheck(registration, identifier);
         }
+    }
+
+    private boolean isStrictReference(final DelegateIdentifier identifier,
+                                      final DelegateReference callReference) {
+        final Optional<DelegateIdentifier> optionalIdentifier = callReference.getIdentifier();
+        return optionalIdentifier.isPresent() && (callReference.getVariant().isPresent() || !optionalIdentifier.get().equals(identifier));
+    }
+
+    private boolean isUsedRegistrationStrictCheck(final DelegateReference registrationReference) {
+        return templateCalls.stream().anyMatch(callReference -> isDefaultAndOnlyReferenceFor(registrationReference, callReference));
+    }
+
+    private boolean isDefaultAndOnlyReferenceFor(final DelegateReference registrationReference,
+                                                 final DelegateReference callReference) {
+
+        // they're both fully specified.
+        if (callReference.equals(registrationReference)) {
+            return true;
+        }
+
+        if ((registrationReference.isDefaultReferenceOf(callReference) &&
+                templateRegistrations.stream().map(DelegateRegistration::getReference).noneMatch(callReference::equals))) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isUsedRegistrationSoftCheck(final DelegateRegistration registration,
@@ -91,38 +122,13 @@ public class SoyDelegateUsageScanner extends NodeTraversal.AbstractPostOrderCall
         }
     }
 
-    private boolean isUsedRegistrationStrictCheck(final DelegateReference reference) {
-        return templateCalls.stream().anyMatch(callReference -> isDefaultAndOnlyReferenceFor(
-                reference, callReference));
+    private boolean isCalledVariantThatEquals(final DelegateIdentifier identifier,
+                                              final String variant) {
+        return getCalledTemplates(identifier).map(DelegateReference::getVariant).anyMatch(v -> v.map(variant::equals).orElse(true));
     }
 
-    public boolean isCalledVariantThatEquals(final DelegateIdentifier identifier,
-                                             final String variant) {
-        return getCalledTemplateVariants(identifier).stream().anyMatch(v -> v.map(variant::equals).orElse(true));
-    }
-
-    public Set<Optional<String>> getCalledTemplateVariants(DelegateIdentifier identifier) {
-        return getCalledTemplates(identifier).map(DelegateReference::getVariant).collect(toSet());
-    }
-
-    public Stream<DelegateReference> getCalledTemplates(DelegateIdentifier identifier) {
+    private Stream<DelegateReference> getCalledTemplates(DelegateIdentifier identifier) {
         return templateCalls.stream().filter(call -> call.getIdentifier().map(identifier::equals).orElse(true));
-    }
-
-    private boolean isDefaultAndOnlyReferenceFor(final DelegateReference reference,
-                                                 final DelegateReference callReference) {
-        return callReference.equals(reference) || (reference.isDefaultReferenceOf(callReference) &&
-                templateRegistrations.stream().map(DelegateRegistration::getReference).noneMatch(callReference::equals));
-    }
-
-    private boolean isStrictReference(final DelegateIdentifier identifier,
-                                      final DelegateReference callReference) {
-        final Optional<DelegateIdentifier> optionalIdentifier = callReference.getIdentifier();
-        return optionalIdentifier.isPresent() && (callReference.getVariant().isPresent() || !optionalIdentifier.get().equals(identifier));
-    }
-
-    public Set<DelegateRegistration> getUsedRegistrations() {
-        return templateRegistrations.stream().filter(this::isUsedRegistration).collect(toSet());
     }
 }
 

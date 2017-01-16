@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class BaseTemplateTest {
 
-    public SoyFileSet packageA() {
+    SoyFileSet packageA() {
         SoyFileSet.Builder builder = SoyFileSet.builder();
         Stream.of("/templates/packageA/default.soy", "/templates/packageA/delpackage_override.soy")
               .map(s -> getClass().getResource(s))
@@ -19,7 +19,7 @@ public class BaseTemplateTest {
         return builder.build();
     }
 
-    public SoyFileSet packageB() {
+    SoyFileSet packageB() {
         SoyFileSet.Builder builder = SoyFileSet.builder();
         Stream.of("/templates/packageB/default.soy")
               .map(s -> getClass().getResource(s))
@@ -27,7 +27,7 @@ public class BaseTemplateTest {
         return builder.build();
     }
 
-    public SoyFileSet packageC() {
+    protected SoyFileSet packageC() {
         SoyFileSet.Builder builder = SoyFileSet.builder();
         Stream.of("/templates/packageC/default.soy")
               .map(s -> getClass().getResource(s))
@@ -35,13 +35,18 @@ public class BaseTemplateTest {
         return builder.build();
     }
 
-    public List<SourceFile> getInputs(SoyFileSet fileSet) {
+    List<SourceFile> getInputs(SoyFileSet fileSet) {
         final List<SourceFile> inputs = new ArrayList<>();
-
         final SoyJsSrcOptions options = new SoyJsSrcOptions();
-        fileSet.compileToJsSrc(options, null).forEach(string -> {
-            inputs.add(SourceFile.fromCode(Objects.hash(string) + ".js", string));
-        });
+        fileSet.compileToJsSrc(options, null).forEach(string -> inputs.add(SourceFile.fromCode(Objects.hash(string) + ".js", string)));
         return inputs;
+    }
+
+    SoyFileSet example() {
+        SoyFileSet.Builder builder = SoyFileSet.builder();
+        Stream.of("/templates/delegate_example.soy")
+              .map(s -> getClass().getResource(s))
+              .forEach(builder::add);
+        return builder.build();
     }
 }

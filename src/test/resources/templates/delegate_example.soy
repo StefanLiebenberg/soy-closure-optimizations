@@ -1,0 +1,43 @@
+{delpackage X}
+
+{namespace example}
+
+
+
+
+
+/**
+ * @param NormalFoo
+ */
+{template .NormalTemplate}
+ {$NormalFoo}
+{/template}
+
+/**
+ * @param NormalFoo
+ */
+{template .NormalTemplate2}
+ {$NormalFoo}
+{/template}
+
+/**
+ * @param SpecialFoo
+ */
+{deltemplate SpecialTemplate variant="'xxx'"}
+ {$SpecialFoo}
+{/deltemplate}
+
+/**
+ * @param NormalFoo
+ * @param SpecialFoo
+ */
+{template .TemplateCall}
+ {call .NormalTemplate data="all" /}
+ {delcall SpecialTemplate data="all" /}
+{/template}
+
+
+
+
+
+

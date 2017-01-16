@@ -13,15 +13,16 @@ import static org.slieb.closure.soyoptimizer.SoyDelegateOptimizationsPass.addToO
 
 public class StrictUsageRemovalTest extends BaseTemplateTest {
 
-    Compiler compiler;
-    Result result;
+    private Compiler compiler;
+
+    private Result result;
 
     @Before
     public void setup() throws IOException {
         compiler = new Compiler();
         CompilerOptions compilerOptions = new CompilerOptions();
         final List<SourceFile> inputs = getInputs(packageB());
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(CompilerOptions.Environment.BROWSER);
         addToOptions(compiler, compilerOptions);
         compilerOptions.setPrettyPrint(true);
         result = compiler.compile(externs, inputs, compilerOptions);

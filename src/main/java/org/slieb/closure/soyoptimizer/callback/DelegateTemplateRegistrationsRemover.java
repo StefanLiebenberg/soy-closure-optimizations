@@ -2,7 +2,6 @@ package org.slieb.closure.soyoptimizer.callback;
 
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 import org.slieb.closure.soyoptimizer.DelegateRegistration;
 import org.slieb.closure.soyoptimizer.node.DelegateRegistrationCall;
 
@@ -58,11 +57,11 @@ public class DelegateTemplateRegistrationsRemover extends NodeTraversal.Abstract
     }
 
     private boolean shouldDetachParent(Node parent) {
-        switch (parent.getType()) {
-            case Token.BLOCK:
-            case Token.EXPR_RESULT:
+        switch (parent.getToken()) {
+            case BLOCK:
+            case EXPR_RESULT:
                 return !parent.hasChildren();
-            case Token.IF:
+            case IF:
                 return (parent.getChildCount() <= 1);
             default:
                 return false;

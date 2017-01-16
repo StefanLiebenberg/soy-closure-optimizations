@@ -8,6 +8,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.javascript.jscomp.CompilationLevel.ADVANCED_OPTIMIZATIONS;
+import static com.google.javascript.jscomp.CompilerOptions.Environment.BROWSER;
+
 public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
 
     @Test
@@ -16,7 +19,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
         CompilerOptions compilerOptions = new CompilerOptions();
         final List<SourceFile> inputs = getInputs(packageA());
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(BROWSER);
         Result result = compiler.compile(externs, inputs, compilerOptions);
         Assert.assertTrue(result.success);
         Assert.assertTrue(result.errors.length == 0);
@@ -31,13 +34,13 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
         CompilerOptions compilerOptions = new CompilerOptions();
         final List<SourceFile> inputs = getInputs(packageA());
 
-        CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(compilerOptions);
-        CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(compilerOptions);
-        CompilationLevel.ADVANCED_OPTIMIZATIONS.setDebugOptionsForCompilationLevel(compilerOptions);
+        ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(compilerOptions);
+        ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(compilerOptions);
+        ADVANCED_OPTIMIZATIONS.setDebugOptionsForCompilationLevel(compilerOptions);
 
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
 
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(BROWSER);
         Result result = compiler.compile(externs, inputs, compilerOptions);
 
         Assert.assertTrue(result.success);
@@ -54,7 +57,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
         final List<SourceFile> inputs = getInputs(packageA());
         inputs.add(SourceFile.fromCode("/bad.js", String.format("var y = 'x', x = %s(y);", SoyDelegateNodeHelper.GET_DELEGATE_ID)));
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(BROWSER);
         Result result = compiler.compile(externs, inputs, compilerOptions);
         Assert.assertFalse(result.success);
         Assert.assertEquals(1, result.errors.length);
@@ -68,7 +71,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
         final List<SourceFile> inputs = getInputs(packageA());
         inputs.add(SourceFile.fromCode("/bad.js", String.format("var y = 'x', x = %s(y, '', {});", SoyDelegateNodeHelper.GET_DELEGATE_FN)));
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(BROWSER);
         Result result = compiler.compile(externs, inputs, compilerOptions);
         Assert.assertTrue(result.success);
         Assert.assertEquals(0, result.errors.length);
@@ -83,7 +86,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
         inputs.add(SourceFile.fromCode("/bad3.js", String.format("var y3 = 'x', x2 = %s(%s('template'), y3, true);", SoyDelegateNodeHelper.GET_DELEGATE_FN,
                                                                  SoyDelegateNodeHelper.GET_DELEGATE_ID)));
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(BROWSER);
         //        compilerOptions.setWarningLevel(SoyDiagnostics.ALL, CheckLevel.OFF);
 
         compilerOptions.setPrettyPrint(true);
@@ -103,7 +106,7 @@ public class SoyDelegateOptimizationsPassTest extends BaseTemplateTest {
         inputs.add(SourceFile.fromCode("/bad3.js", String.format("var y3 = 'x', x2 = %s(%s(y1), y3, true);", SoyDelegateNodeHelper.GET_DELEGATE_FN,
                                                                  SoyDelegateNodeHelper.GET_DELEGATE_ID)));
         SoyDelegateOptimizationsPass.addToOptions(compiler, compilerOptions);
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(BROWSER);
         compilerOptions.setWarningLevel(SoyDiagnostics.ALL, CheckLevel.OFF);
         compilerOptions.setPrettyPrint(true);
         Result result = compiler.compile(externs, inputs, compilerOptions);

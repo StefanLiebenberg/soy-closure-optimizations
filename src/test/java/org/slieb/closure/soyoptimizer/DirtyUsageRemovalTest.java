@@ -21,10 +21,11 @@ public class DirtyUsageRemovalTest extends BaseTemplateTest {
         compiler = new Compiler();
         CompilerOptions compilerOptions = new CompilerOptions();
         final List<SourceFile> inputs = getInputs(packageC());
-        inputs.add(SourceFile.fromCode("bad1.js", String.format("var id = %s('templateName_004');", SoyDelegateNodeHelper.GET_DELEGATE_ID)));
+        inputs.add(SourceFile.fromCode("bad1.js", "var id = soy.$$getDelTemplateId('templateName_004');"));
         inputs.add(SourceFile.fromCode("bad2.js", "soy.$$getDelegateFn(id, '', true);"));
         inputs.add(SourceFile.fromCode("bad3.js", "soy.$$getDelegateFn(id, 'variant_1', true);"));
-        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(compilerOptions);
+
+        final List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(CompilerOptions.Environment.BROWSER);
         addToOptions(compiler, compilerOptions);
         compilerOptions.setWarningLevel(
                 DiagnosticGroup.forType(SoyDiagnostics.OPTIMIZATION_GET_ID_NOT_USED_FOR_GET_FN), CheckLevel.OFF);
